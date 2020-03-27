@@ -41,8 +41,8 @@ typedef struct  {
 
 volatile char flag_rtc = 0;
 volatile Bool f_rtt_alarme = false;
-volatile char flag_tc = 0;
-
+volatile char flag_tc1 = 0;
+volatile char flag_tc0 = 0;
 
 
 void LED_init(int estado, int estado2);
@@ -56,12 +56,22 @@ static void RTT_init(uint16_t pllPreScale, uint32_t IrqNPulses);
 void TC1_Handler(void){
 	volatile uint32_t ul_dummy;
 
-
+	
 	ul_dummy = tc_get_status(TC0, 1);
 
 	UNUSED(ul_dummy);
 
-	flag_tc = 1;
+	flag_tc1 = 1;
+}
+void TC0_Handler(void){
+	volatile uint32_t ul_dummy;
+
+	
+	ul_dummy = tc_get_status(TC0, 0);
+
+	UNUSED(ul_dummy);
+
+	flag_tc0 = 1;
 }
 void RTT_Handler(void)
 {
@@ -201,7 +211,13 @@ void pisca_led(int n, int t,int led){
 		delay_ms(t);
 		pio_set(LED3_PIO, LED3_PIO_IDX_MASK);
 		delay_ms(t);
-		}	
+		}
+		if(led==0){
+		pio_clear(LED_PIO, LED_PIO_IDX_MASK);
+		delay_ms(t);
+		pio_set(LED_PIO, LED_PIO_IDX_MASK);
+		delay_ms(t);
+		}		
 		}
 	}
 
@@ -230,6 +246,7 @@ int main (void)
 	gfx_mono_draw_filled_circle(20, 16, 16, GFX_PIXEL_SET, GFX_WHOLE);
     gfx_mono_draw_string("oi rafa", 50,16, &sysfont);
 	TC_init(TC0, ID_TC1, 1, 4);
+	TC_init(TC0, ID_TC0, 0, 5);
 
   /* Insert application code here, after the board has been initialized. */
 	while(1) {
@@ -250,9 +267,13 @@ int main (void)
       
       f_rtt_alarme = false;
     }
-	if(flag_tc){
+	if(flag_tc1){
       pisca_led(1,10,3);
-      flag_tc = 0;
+      flag_tc1 = 0;
+    }
+	if(flag_tc0){
+      pisca_led(1,10,0);
+      flag_tc0 = 0;
     }
   }  
 }
