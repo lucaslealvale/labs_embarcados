@@ -24,8 +24,7 @@
     tem que ser var global! */
 SemaphoreHandle_t xSemaphore;
 
-extern void vApplicationStackOverflowHook(xTaskHandle *pxTask,
-		signed char *pcTaskName);
+extern void vApplicationStackOverflowHook(xTaskHandle *pxTask,signed char *pcTaskName);
 extern void vApplicationIdleHook(void);
 extern void vApplicationTickHook(void);
 extern void vApplicationMallocFailedHook(void);

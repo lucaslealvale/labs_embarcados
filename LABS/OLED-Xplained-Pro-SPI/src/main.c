@@ -36,6 +36,8 @@ typedef struct  {
 
 
 volatile char flag_rtc = 0;
+volatile char flag_rtc1 = 0;
+
 volatile Bool f_rtt_alarme = false;
 volatile char flag_tc1 = 0;
 volatile char flag_tc0 = 0;
@@ -118,6 +120,7 @@ void RTC_Handler(void){
 	uint32_t ul_status = rtc_get_status(RTC);
 	if ((ul_status & RTC_SR_SEC) == RTC_SR_SEC) {
 		rtc_clear_status(RTC, RTC_SCCR_SECCLR);
+		flag_rtc1 = 1;
 	}
 	if ((ul_status & RTC_SR_ALARM) == RTC_SR_ALARM) {
 			rtc_clear_status(RTC, RTC_SCCR_ALRCLR);
@@ -172,16 +175,23 @@ int main (void){
     calendar rtc_initial = {2018, 3, 19, 12, 15, 45 ,1};
 	RTC_init(RTC, ID_RTC, rtc_initial, RTC_IER_ALREN | RTC_IER_SECEN);
     rtc_set_date_alarm(RTC, 1, rtc_initial.month, 1, rtc_initial.day);
-    rtc_set_time_alarm(RTC, 1, rtc_initial.hour, 1, rtc_initial.minute, 1, rtc_initial.seccond + 20);
-	gfx_mono_draw_filled_circle(20, 16, 16, GFX_PIXEL_SET, GFX_WHOLE);
-    gfx_mono_draw_string("oi rafa", 50,16, &sysfont);
+    rtc_set_time_alarm(RTC, 1, rtc_initial.hour, 1, rtc_initial.minute, 1, rtc_initial.seccond + 20);    
 	TC_init(TC0, ID_TC1, 1, 4);
 	TC_init(TC0, ID_TC0, 0, 5);
+
 	while(1) {
 		if(flag_rtc){
 			pisca_led(5, 200,1);
 			flag_rtc = 0;
-	}	
+			}
+
+		if(flag_rtc1){
+			rtc_get_time(RTC,&rtc_initial.hour,&rtc_initial.minute,&rtc_initial.seccond);
+			char b[200];
+			sprintf(b, "%2d : %2d : %2d",rtc_initial.hour,rtc_initial.minute,rtc_initial.seccond);
+			gfx_mono_draw_string(b, 1,13, &sysfont);
+			flag_rtc1 = 0;
+		}	
 	if (f_rtt_alarme){
       uint16_t pllPreScale = (int) (((float) 32768) / 4.0);
       uint32_t irqRTTvalue = 8;  
