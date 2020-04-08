@@ -48,8 +48,7 @@ volatile uint32_t g_ul_value = 0;
 /* handler/callbacks                                                    */
 /************************************************************************/
 static void AFEC_pot_Callback(void){
-  g_ul_value = afec_channel_get_value(AFEC_POT, AFEC_POT_CHANNEL);
-  g_is_conversion_done = true;
+
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   xSemaphoreGiveFromISR(xSemaphore, &xHigherPriorityTaskWoken);
 }
