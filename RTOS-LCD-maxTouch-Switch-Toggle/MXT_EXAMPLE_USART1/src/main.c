@@ -53,10 +53,19 @@ typedef struct
   uint32_t x;        // posicao x
   uint32_t y;        // posicao y
   uint32_t status;
+  void (*func)(void);
 } t_but;
 
 QueueHandle_t xQueueTouch;
-
+void but0_CALLBACK(void){
+  printf("callback but0");
+}
+void but2_CALLBACK(void){
+  printf("callback but2");
+}
+void but3_CALLBACK(void){
+  printf("callback but3");
+}
 /************************************************************************/
 /* handler/callbacks                                                    */
 /************************************************************************/
@@ -287,6 +296,7 @@ int process_touch(t_but botoes[], touchData touch, uint32_t n)
 {
   for (int i = 0; i < n; i++)
   {
+    botoes[i].func();
     if ((touch.x >= botoes[i].x - botoes[i].width / 2 && touch.x <= botoes[i].x + botoes[i].width / 2) &&
         (touch.y >= botoes[i].y - botoes[i].height / 2 && touch.y <= botoes[i].y + botoes[i].height / 2))
     {
@@ -303,13 +313,13 @@ void task_lcd(void)
   draw_screen();
   font_draw_text(&digital52, "DEMO - BUT", 0, 0, 1);
 
-  t_but but0 = {.width = 120, .height = 75, .colorOn = COLOR_TOMATO, .colorOff = COLOR_BLACK, .x = ILI9488_LCD_WIDTH / 2, .y = 100, .status = 1};
+  t_but but0 = {.width = 120, .height = 75, .colorOn = COLOR_TOMATO, .colorOff = COLOR_BLACK, .x = ILI9488_LCD_WIDTH / 2, .y = 100, .status = 1, .func=&but0_CALLBACK};
   draw_button_new(but0);
 
-  t_but but2 = {.width = 120, .height = 75, .colorOn = COLOR_AZUR, .colorOff = COLOR_BLACK, .x = ILI9488_LCD_WIDTH / 2, .y = 200, .status = 1};
+  t_but but2 = {.width = 120, .height = 75, .colorOn = COLOR_AZUR, .colorOff = COLOR_BLACK, .x = ILI9488_LCD_WIDTH / 2, .y = 200, .status = 1,.func=&but2_CALLBACK};
   draw_button_new(but2);
 
-  t_but but3 = {.width = 120, .height = 75, .colorOn = COLOR_GREENYELLOW, .colorOff = COLOR_BLACK, .x = ILI9488_LCD_WIDTH / 2, .y = 300, .status = 1};
+  t_but but3 = {.width = 120, .height = 75, .colorOn = COLOR_GREENYELLOW, .colorOff = COLOR_BLACK, .x = ILI9488_LCD_WIDTH / 2, .y = 300, .status = 1, .func=&but3_CALLBACK};
   draw_button_new(but3);
   t_but botoes[] = {but0, but2, but3};
   // struct local para armazenar msg enviada pela task do mxt
@@ -321,6 +331,7 @@ void task_lcd(void)
     {
       int b = process_touch(botoes, touch, 3);
       printf("b:%d \n", b);
+      
 
       if (b >= 0)
       {
