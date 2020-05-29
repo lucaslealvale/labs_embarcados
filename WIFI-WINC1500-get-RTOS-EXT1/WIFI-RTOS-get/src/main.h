@@ -62,7 +62,7 @@ extern "C" {
 /** Send buffer of TCP socket. */
 #define MAIN_PREFIX_BUFFER                  "GET /status HTTP/1.1\r\n Accept: */*\r\n\r\n"
 /** Weather information provider server. */
-#define MAIN_SERVER_NAME                    "192.168.15.1"
+#define MAIN_SERVER_NAME                    "192.168.15.29"
 
 /** Receive buffer size. */
 #define MAIN_WIFI_M2M_BUFFER_SIZE           1400

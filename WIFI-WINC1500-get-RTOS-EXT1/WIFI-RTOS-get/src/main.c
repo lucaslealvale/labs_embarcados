@@ -293,7 +293,14 @@ static void task_process(void *pvParameters) {
         printf(STRING_LINE);
         printf(p_recvMsg->pu8Buffer);
         printf(STRING_EOL);  printf(STRING_LINE);
+        char *a = strstr(p_recvMsg->pu8Buffer, "led");
+        
         state = DONE;
+        if (a[7] == '0')
+          pio_set(LED_PIO, LED_PIO_IDX_MASK);
+
+        else if (a[7] == '1')
+          pio_clear(LED_PIO, LED_PIO_IDX_MASK);
       }
       else {
         state = TIMEOUT;
@@ -387,7 +394,9 @@ int main(void)
   /* Initialize the board. */
   sysclk_init();
   board_init();
+  pmc_enable_periph_clk(LED_PIO_ID);
 
+	pio_set_output(LED_PIO, LED_PIO_IDX_MASK, 0, 0, 0);
   /* Initialize the UART console. */
   configure_console();
   printf(STRING_HEADER);
