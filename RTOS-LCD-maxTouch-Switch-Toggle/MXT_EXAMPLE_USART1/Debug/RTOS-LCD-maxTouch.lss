@@ -10236,6 +10236,8 @@ void task_lcd(void)
 {
   40407c:	e92d 41f0 	stmdb	sp!, {r4, r5, r6, r7, r8, lr}
   404080:	b0b6      	sub	sp, #216	; 0xd8
+  // #define ILI9488_LCD_WIDTH  320
+  // #define ILI9488_LCD_HEIGHT 480
   xQueueTouch = xQueueCreate(10, sizeof(touchData));
   404082:	2200      	movs	r2, #0
   404084:	2108      	movs	r1, #8

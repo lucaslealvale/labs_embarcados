@@ -308,6 +308,8 @@ int process_touch(t_but botoes[], touchData touch, uint32_t n)
 }
 void task_lcd(void)
 {
+  // #define ILI9488_LCD_WIDTH  320
+  // #define ILI9488_LCD_HEIGHT 480
   xQueueTouch = xQueueCreate(10, sizeof(touchData));
   configure_lcd();
   draw_screen();

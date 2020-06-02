@@ -184,7 +184,7 @@ static void task_execute(void *pvParameters)
 
   while (1)
   {
-    printf("meanwhile\n");
+    //printf("meanwhile\n");
 
     if (xQueueReceive(xQueueCommand, &recebmento, 100 / portTICK_PERIOD_MS))
     {
